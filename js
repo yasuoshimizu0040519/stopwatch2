@@ -1,9 +1,9 @@
 'use strict';
 
 const time = document.getElementById('time');
-const start = document.getElementById('start');
-const stop = document.getElementById('stop');
-const reset = document.getElementById('reset');
+const startButton = document.getElementById('start');
+const stopButton = document.getElementById('stop');
+const resetButton = document.getElementById('reset');
 
 let startTime;
 let stopTime = 0;
@@ -11,35 +11,34 @@ let timeoutID;
 
 function displayTime() {
   const currentTime = new Date(Date.now() - startTime + stopTime);
-  const h = String(currentTime.getHours()-1).padStart(2, '0');
   const m = String(currentTime.getMinutes()).padStart(2, '0');
   const s = String(currentTime.getSeconds()).padStart(2, '0');
   const ms = String(currentTime.getMilliseconds()).padStart(2, '0');
 
-  time.textContent = `${h}:${m}:${s}.${ms}`;
+  time.textContent = `${m}:${s}.${ms}`;
   timeoutID = setTimeout(displayTime, 10);
 }
 
 startButton.addEventListener('click', () => {
-  start.disabled = true;
-  stop.disabled = false;
-  reset.disabled = true;
+  startButton.disabled = true;
+  stopButton.disabled = false;
+  resetButton.disabled = true;
   startTime = Date.now();
   displayTime();
 });
 
 stopButton.addEventListener('click', function() {
-  start.disabled = false;
-  stopn.disabled = true;
-  reset.disabled = false;
+  startButton.disabled = false;
+  stopButton.disabled = true;
+  resetButton.disabled = false;
   clearTimeout(timeoutID);
   stopTime += (Date.now() - startTime);
 });
 
 reset.addEventListener('click', function() {
-  start.disabled = false;
-  stop.disabled = true;
-  reset.disabled = true;
-  time.textContent = '00:00:00.00';
+  startButton.disabled = false;
+  stopButton.disabled = true;
+  resetButton.disabled = true;
+  time.textContent = '00:00:00';
   stopTime = 0;
 });
