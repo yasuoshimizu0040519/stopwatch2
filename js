@@ -1,45 +1,49 @@
-'use strict';
+let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
+let timeRef = document.querySelector(".timer-display");
+let int = null;
 
-const time = document.getElementById('time');
-const startButton = document.getElementById('start');
-const stopButton = document.getElementById('stop');
-const resetButton = document.getElementById('reset');
+document.getElementById("start-timer").addEventListener("click", () => {
+    if(int !== null) {
+        clearInterval(int);
+    }
+    int = setInterval(displayTimer, 10);
+});
 
-let startTime;
-let stopTime = 0;
-let timeoutID;
+document.getElementById("stop-timer").addEventListener("click", () => {
+    clearInterval(int);
+});
 
-function displayTime() {
-  const currentTime = new Date(Date.now() - startTime + stopTime);
-  const h = String(currentTime.getHours()-1).padStart(2, '0');
-  const m = String(currentTime.getMinutes()).padStart(2, '0');
-  const s = String(currentTime.getSeconds()).padStart(2, '0');
-  const ms = String(currentTime.getMilliseconds()).padStart(2, '0');
+document.getElementById("reset-timer").addEventListener("click", () => {
+    clearInterval(int);
+    [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
+    timeRef.innerHTML = "00 : 00 : 00 : 00 ";
+}); 
 
-  time.textContent = `${m}:${s}.${ms}`;
-  timeoutID = setTimeout(displayTime, 10);
+function displayTimer() {
+    milliseconds += 10;
+    if(milliseconds == 1000) {
+        milliseconds = 0;
+        seconds++;
+        if(seconds == 60) {
+            seconds = 0;
+            minutes++;
+            if(minutes == 60) {
+                minutes = 0;
+                hours++;
+            }
+        }
+    }
+
+    let h = hours < 10 ? "0" + hours : hours;
+    let m = minutes < 10 ? "0" + minutes : minutes;
+    let s = seconds < 10 ? "0" + seconds : seconds;
+    let ms = 
+        milliseconds < 10
+        ? "00" + milliseconds
+        : milliseconds < 100
+        ? "0" + milliseconds
+        : milliseconds;
+
+    timeRef.innerHTML = `${h} : ${m} : ${s} : ${ms}`;
+
 }
-
-startButton.addEventListener('click', () => {
-  startButton.disabled = true;
-  stopButton.disabled = false;
-  resetButton.disabled = true;
-  startTime = Date.now();
-  displayTime();
-});
-
-stopButton.addEventListener('click', function() {
-  startButton.disabled = false;
-  stopButton.disabled = true;
-  resetButton.disabled = false;
-  clearTimeout(timeoutID);
-  stopTime += (Date.now() - startTime);
-});
-
-reset.addEventListener('click', function() {
-  startButton.disabled = false;
-  stopButton.disabled = true;
-  resetButton.disabled = true;
-  time.textContent = '00:00:00.00';
-  stopTime = 0;
-});
